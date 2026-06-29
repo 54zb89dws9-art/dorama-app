@@ -3,96 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="telegram-webapp-bg-color" content="#0a0a0a">
-    <meta name="telegram-webapp-header-color" content="#111111">
+    <meta name="telegram-webapp-bg-color" content="#0f0f1a">
+    <meta name="telegram-webapp-header-color" content="#1a1a2e">
     <title>Дорама Хаб</title>
     <style>
+        :root {
+            --bg: #0f0f1a;
+            --card: rgba(255,255,255,0.03);
+            --accent: #e94560;
+            --gold: #ffd700;
+            --text: #fff;
+            --text2: #8890a0;
+            --glass: rgba(255,255,255,0.05);
+            --border: rgba(255,255,255,0.06);
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-        body { background: #0a0a0a; color: #fff; min-height: 100vh; }
+        body {
+            background: var(--bg);
+            background-image: radial-gradient(ellipse at top, #1a1a35 0%, #0f0f1a 60%);
+            color: var(--text);
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
         
         #splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(145deg, #1a1a2e 0%, #0a0a0a 100%);
+            background: linear-gradient(160deg, #1a1a35 0%, #0f0f1a 50%, #1a0a15 100%);
             z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column;
-            transition: opacity 0.5s;
+            transition: opacity 0.6s;
         }
-        #splash.hide { opacity: 0; pointer-events: none; }
-        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        @keyframes glow { 0%,100% { text-shadow: 0 0 20px rgba(233,69,96,0.4); } 50% { text-shadow: 0 0 40px rgba(233,69,96,0.8); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         
-        .header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #111; position: sticky; top: 0; z-index: 10; }
-        .ava { width: 40px; height: 40px; border-radius: 50%; background: #e94560; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+        .header {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            background: rgba(15,15,26,0.8); backdrop-filter: blur(20px);
+            position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border);
+        }
+        .ava {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: linear-gradient(135deg, #e94560, #c23152);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 15px; flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(233,69,96,0.3);
+        }
         .info { flex: 1; min-width: 0; }
-        .name { font-weight: 700; font-size: 15px; }
-        .uname { color: #888; font-size: 12px; }
-        .donate-top { background: #ffd700; color: #000; padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; }
+        .name { font-weight: 700; font-size: 14px; letter-spacing: 0.3px; }
+        .uname { color: var(--text2); font-size: 11px; }
+        .donate-top {
+            background: linear-gradient(135deg, #ffd700, #f0a500);
+            color: #000; padding: 8px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 12px; cursor: pointer; border: none;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.25); transition: 0.2s;
+        }
+        .donate-top:active { transform: scale(0.94); }
         
-        .tabs { display: flex; background: #111; padding: 4px; margin: 12px 16px; border-radius: 12px; gap: 4px; }
-        .tab { flex: 1; padding: 10px; border: none; background: transparent; color: #888; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 13px; transition: 0.2s; }
-        .tab.active { background: #e94560; color: #fff; }
+        .tabs {
+            display: flex; background: var(--glass); padding: 5px; margin: 14px 16px;
+            border-radius: 14px; gap: 4px; backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+        }
+        .tab {
+            flex: 1; padding: 11px 8px; border: none; background: transparent;
+            color: var(--text2); border-radius: 11px; font-weight: 600;
+            cursor: pointer; font-size: 12px; transition: 0.25s;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .tab.active { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(233,69,96,0.35); }
         
-        .page { display: none; padding: 0 16px 120px; }
+        .page { display: none; padding: 0 16px 120px; animation: slideUp 0.4s ease; }
         .page.active { display: block; }
-        
-        .section-title { font-size: 18px; font-weight: 700; margin: 20px 0 12px; }
+        .section-title { font-size: 17px; font-weight: 700; margin: 18px 0 12px; display: flex; align-items: center; gap: 8px; }
         
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .mini-card { background: #1a1a1a; border-radius: 14px; overflow: hidden; cursor: pointer; transition: 0.2s; border: 1px solid #2a2a2a; }
-        .mini-card:active { transform: scale(0.96); border-color: #e94560; }
-        .mini-poster { height: 130px; display: flex; align-items: center; justify-content: center; font-size: 50px; background: linear-gradient(135deg, #1a1a2e, #16213e); }
-        .mini-info { padding: 10px; }
-        .mini-title { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
-        .mini-meta { color: #888; font-size: 11px; }
-        .mini-rating { color: #ffd700; font-weight: 700; font-size: 12px; margin-top: 2px; }
+        .mini-card {
+            background: var(--card); border-radius: 16px; overflow: hidden;
+            cursor: pointer; transition: 0.2s; border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+        .mini-card:active { transform: scale(0.95); border-color: var(--accent); }
+        .mini-poster {
+            height: 140px; background-size: cover; background-position: center;
+            background-repeat: no-repeat; position: relative;
+        }
+        .mini-poster .play-icon {
+            position: absolute; bottom: 8px; right: 8px;
+            background: rgba(0,0,0,0.6); width: 30px; height: 30px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+        }
+        .mini-info { padding: 10px 12px; }
+        .mini-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
+        .mini-meta { color: var(--text2); font-size: 10px; }
+        .mini-rating { color: var(--gold); font-weight: 700; font-size: 11px; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+        .badge { background: rgba(233,69,96,0.15); color: var(--accent); padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
         
-        .card { background: #1a1a1a; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #2a2a2a; }
-        .card .poster { font-size: 50px; text-align: center; margin-bottom: 10px; }
-        .card .title { font-size: 18px; font-weight: 700; }
-        .card .meta { color: #888; font-size: 12px; margin: 4px 0; }
-        .card .desc { color: #aaa; font-size: 13px; margin: 8px 0; line-height: 1.4; }
+        .card {
+            background: var(--card); border-radius: 20px; padding: 20px;
+            border: 1px solid var(--border); backdrop-filter: blur(10px);
+        }
+        .card-poster {
+            width: 100%; height: 220px; background-size: cover;
+            background-position: center; border-radius: 14px; margin-bottom: 14px;
+        }
+        .card .title { font-size: 19px; font-weight: 700; letter-spacing: 0.3px; }
+        .card .meta { color: var(--text2); font-size: 12px; margin: 6px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .card .desc { color: #b0b8c0; font-size: 13px; margin: 10px 0; line-height: 1.5; }
         
-        .eps { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-        .eps button { padding: 8px 12px; border-radius: 8px; border: 1px solid #4caf50; background: transparent; color: #4caf50; font-size: 12px; cursor: pointer; font-weight: 600; }
-        .eps button:active { transform: scale(0.93); }
-        .eps button.lock { border-color: #555; color: #555; }
+        .eps { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+        .eps button {
+            padding: 8px 13px; border-radius: 10px; border: 1px solid rgba(76,175,80,0.3);
+            background: rgba(76,175,80,0.05); color: #4caf50;
+            font-size: 11px; cursor: pointer; font-weight: 600; transition: 0.2s;
+        }
+        .eps button:active { transform: scale(0.92); }
+        .eps button.lock { border-color: rgba(255,255,255,0.1); color: #555; background: transparent; }
         
-        .donate-btn { background: linear-gradient(135deg, #ffd700, #ffaa00); border: none; color: #000; padding: 12px; border-radius: 10px; width: 100%; margin-top: 12px; font-weight: 700; cursor: pointer; font-size: 14px; }
+        .donate-btn {
+            background: linear-gradient(135deg, #ffd700, #f0a500);
+            border: none; color: #000; padding: 13px; border-radius: 12px;
+            width: 100%; margin-top: 14px; font-weight: 700; cursor: pointer;
+            font-size: 14px; box-shadow: 0 6px 20px rgba(255,215,0,0.2); transition: 0.2s;
+        }
+        .donate-btn:active { transform: scale(0.96); }
         
         .search-box { margin: 16px 0; }
-        .search-box input { width: 100%; padding: 14px 16px; background: #1a1a1a; border: 2px solid #2a2a2a; border-radius: 14px; color: #fff; font-size: 15px; transition: 0.2s; }
-        .search-box input:focus { outline: none; border-color: #e94560; }
+        .search-box input {
+            width: 100%; padding: 14px 18px; background: var(--card);
+            border: 1px solid var(--border); border-radius: 14px;
+            color: var(--text); font-size: 14px; transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        .search-box input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(233,69,96,0.1); }
+        .search-box input::placeholder { color: #555; }
         
         .player-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; flex-direction: column; }
-        .player-modal.active { display: flex; }
+        .player-modal.active { display: flex; animation: slideUp 0.3s; }
         .player-top { padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #111; }
-        .player-top span { font-weight: 600; font-size: 14px; }
-        .player-close { background: #e94560; border: none; color: #fff; padding: 8px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; }
+        .player-top span { font-weight: 600; font-size: 13px; }
+        .player-close { background: var(--accent); border: none; color: #fff; padding: 7px 14px; border-radius: 18px; font-weight: 700; cursor: pointer; font-size: 12px; }
         .player-frame { flex: 1; background: #000; }
         .player-frame iframe { width: 100%; height: 100%; border: none; }
         
-        .stars-row { display: flex; align-items: center; gap: 4px; margin: 8px 0; }
-        .star { font-size: 22px; color: #333; cursor: pointer; transition: 0.15s; }
-        .star.on { color: #ffd700; }
-        .avg-text { color: #ffd700; font-size: 13px; margin-left: 6px; font-weight: 600; }
+        .stars-row { display: flex; align-items: center; gap: 5px; margin: 10px 0; }
+        .star { font-size: 24px; color: #2a2a3a; cursor: pointer; transition: 0.15s; }
+        .star.on { color: var(--gold); }
+        .star:active { transform: scale(1.3); }
+        .avg-text { color: var(--gold); font-size: 13px; margin-left: 8px; font-weight: 600; }
         
-        .review-input { width: 100%; padding: 10px; background: #0a0a0a; border: 1px solid #333; border-radius: 10px; color: #fff; font-size: 13px; margin-top: 10px; resize: vertical; }
-        .review-btn { background: #e94560; border: none; color: #fff; padding: 8px 16px; border-radius: 8px; margin-top: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
-        .review-list { max-height: 140px; overflow-y: auto; margin-top: 10px; }
-        .review-item { padding: 8px 10px; background: #111; border-radius: 10px; margin-bottom: 6px; font-size: 12px; }
-        .review-item b { color: #e94560; }
+        .review-input { width: 100%; padding: 10px 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; color: #fff; font-size: 12px; margin-top: 10px; resize: vertical; }
+        .review-btn { background: var(--accent); border: none; color: #fff; padding: 8px 16px; border-radius: 8px; margin-top: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
+        .review-list { max-height: 130px; overflow-y: auto; margin-top: 10px; }
+        .review-item { padding: 8px 10px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 5px; font-size: 11px; }
+        .review-item b { color: var(--accent); }
         
-        .banner { background: linear-gradient(135deg, #1a1a2e, #2a1a2e); border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 16px; border: 1px solid #333; }
-        .banner p { font-size: 13px; color: #ccc; }
-        .banner button { background: #ffd700; color: #000; border: none; padding: 10px 20px; border-radius: 20px; margin-top: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
+        .banner {
+            background: linear-gradient(135deg, rgba(233,69,96,0.1), rgba(255,215,0,0.05));
+            border-radius: 16px; padding: 16px; text-align: center;
+            margin-bottom: 18px; border: 1px solid var(--border);
+        }
+        .banner p { font-size: 13px; color: #b0b8c0; }
+        .banner button {
+            background: var(--gold); color: #000; border: none;
+            padding: 10px 22px; border-radius: 20px; margin-top: 8px;
+            font-weight: 700; cursor: pointer; font-size: 13px;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.2);
+        }
         
-        .back-btn { background: none; border: none; color: #e94560; font-size: 16px; cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; gap: 4px; }
+        .back-btn { background: none; border: none; color: var(--accent); font-size: 15px; cursor: pointer; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+        .result-card { background: var(--card); border-radius: 14px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
+        .result-card:active { border-color: var(--accent); }
+        .genre-tag { display: inline-block; background: rgba(233,69,96,0.1); color: #e94560; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div id="splash">
-    <div style="font-size:70px;animation:pulse 1.5s infinite;">🎬</div>
-    <div style="font-size:26px;font-weight:800;color:#fff;margin-top:16px;letter-spacing:1px;">ДОРАМА ХАБ</div>
-    <div style="color:#e94560;font-size:14px;margin-top:6px;">Твои любимые дорамы</div>
+    <div style="font-size:60px;animation:float 2.5s ease-in-out infinite;">🎬</div>
+    <div style="font-size:28px;font-weight:800;color:#fff;margin-top:18px;letter-spacing:1px;animation:glow 2s ease-in-out infinite;">ДОРАМА ХАБ</div>
+    <div style="color:#e94560;font-size:13px;margin-top:8px;opacity:0.9;">Твои любимые дорамы</div>
 </div>
 
 <div class="header">
@@ -141,7 +231,10 @@ let currentDorama = null;
 
 let dramas = [
     {
-        id: 1, title: 'Истинная красота', poster: '💄', year: 2020, rating: 4.8,
+        id: 1,
+        title: 'Истинная красота',
+        poster: 'https://i.ibb.co/0jKzY5n/true-beauty.jpg',
+        year: 2020, rating: 4.8, genre: 'Романтика',
         desc: 'Старшеклассница осваивает макияж и становится самой популярной девушкой в школе.',
         reviews: [{user:'Анна',stars:5,txt:'Лучшая дорама!'},{user:'Вика',stars:4,txt:'Очень смешная'}],
         eps: [
@@ -153,7 +246,10 @@ let dramas = [
         ]
     },
     {
-        id: 2, title: 'Наследники', poster: '👑', year: 2013, rating: 4.7,
+        id: 2,
+        title: 'Наследники',
+        poster: 'https://i.ibb.co/qYzLd0R/heirs.jpg',
+        year: 2013, rating: 4.7, genre: 'Романтика',
         desc: 'История любви между обычной девушкой и наследником огромной корпорации.',
         reviews: [{user:'Марина',stars:5,txt:'Классика!'}],
         eps: [
@@ -163,9 +259,48 @@ let dramas = [
         ]
     },
     {
-        id: 3, title: 'Гоблин', poster: '🗡️', year: 2016, rating: 4.9,
+        id: 3,
+        title: 'Гоблин',
+        poster: 'https://i.ibb.co/5YtPvXW/goblin.jpg',
+        year: 2016, rating: 4.9, genre: 'Фэнтези',
         desc: 'Бессмертный гоблин ищет свою невесту, которая снимет проклятие.',
         reviews: [{user:'Оля',stars:5,txt:'Шедевр!'}],
+        eps: [
+            {n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},
+            {n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}
+        ]
+    },
+    {
+        id: 4,
+        title: 'Потомки солнца',
+        poster: 'https://i.ibb.co/3YdJqXk/dots.jpg',
+        year: 2016, rating: 4.8, genre: 'Романтика',
+        desc: 'История любви капитана спецназа и военного врача.',
+        reviews: [{user:'Лена',stars:5,txt:'Потрясающе!'}],
+        eps: [
+            {n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},
+            {n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}
+        ]
+    },
+    {
+        id: 5,
+        title: 'Что случилось с секретарём Ким',
+        poster: 'https://i.ibb.co/dPqYLrY/kim.jpg',
+        year: 2018, rating: 4.7, genre: 'Комедия',
+        desc: 'Идеальный начальник и его секретарь, которая решает уволиться.',
+        reviews: [{user:'Катя',stars:5,txt:'Очень смешная!'}],
+        eps: [
+            {n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},
+            {n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}
+        ]
+    },
+    {
+        id: 6,
+        title: 'Мой ID — Каннамская красота',
+        poster: 'https://i.ibb.co/7jMYm0z/gangnam.jpg',
+        year: 2018, rating: 4.6, genre: 'Романтика',
+        desc: 'Девушка делает пластику и пытается начать новую жизнь в универе.',
+        reviews: [{user:'Настя',stars:4,txt:'Интересная тема'}],
         eps: [
             {n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},
             {n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}
@@ -173,9 +308,13 @@ let dramas = [
     }
 ];
 
-setTimeout(function(){
-    document.getElementById('splash').classList.add('hide');
-}, 1800);
+// Убираем заставку
+setTimeout(function(){ 
+    var s = document.getElementById('splash');
+    s.style.opacity = '0';
+    s.style.pointerEvents = 'none';
+    setTimeout(function(){ s.style.display = 'none'; }, 500);
+}, 2000);
 
 function loadUser() {
     if(tg.initDataUnsafe?.user) {
@@ -200,14 +339,16 @@ function avgR(d) { return d.reviews.length ? (d.reviews.reduce((a,r)=>a+r.stars,
 function showGrid() {
     document.getElementById('grid-view').style.display = 'grid';
     document.getElementById('detail-view').style.display = 'none';
-    document.getElementById('grid-view').innerHTML = dramas.map(d=>{
+    document.getElementById('grid-view').innerHTML = dramas.map((d,i)=>{
         let ar = avgR(d);
         return `<div class="mini-card" onclick="openDetail(${d.id})">
-            <div class="mini-poster">${d.poster}</div>
+            <div class="mini-poster" style="background-image:url('${d.poster}');">
+                <div class="play-icon">▶️</div>
+            </div>
             <div class="mini-info">
                 <div class="mini-title">${d.title}</div>
                 <div class="mini-meta">${d.eps.length} серий • ${d.year}</div>
-                <div class="mini-rating">⭐ ${ar} / 5</div>
+                <div class="mini-rating">⭐ ${ar} <span class="badge">#${i+1}</span></div>
             </div>
         </div>`;
     }).join('');
@@ -223,9 +364,12 @@ function openDetail(id) {
     dv.innerHTML = `
         <button class="back-btn" onclick="showGrid()">← Назад</button>
         <div class="card">
-            <div class="poster">${d.poster}</div>
+            <div class="card-poster" style="background-image:url('${d.poster}');"></div>
             <div class="title">${d.title}</div>
-            <div class="meta">⭐ ${d.rating} • ${d.eps.length} серий • ${d.year}</div>
+            <div class="meta">
+                ⭐ ${d.rating} <span>•</span> ${d.eps.length} серий <span>•</span> ${d.year}
+                <span class="genre-tag">${d.genre||'Дорама'}</span>
+            </div>
             <div class="desc">${d.desc}</div>
             <div class="stars-row">${[1,2,3,4,5].map(i=>`<span class="star ${i<=ar?'on':''}" onclick="rate(${d.id},${i})">★</span>`).join('')}<span class="avg-text">${ar}/5</span></div>
             <div class="eps">${d.eps.map(e=>`<button class="${e.url?'':'lock'}" onclick="play(${d.id},${e.n})">С${e.n} ${e.url?'▶️':'🔒'}</button>`).join('')}</div>
@@ -242,12 +386,12 @@ function doSearch() {
     let f = dramas.filter(d=>d.title.toLowerCase().includes(q));
     document.getElementById('s-res').innerHTML = q ? (f.length ? f.map(d=>{
         let ar = avgR(d);
-        return `<div style="background:#1a1a1a;border-radius:14px;padding:12px;margin-bottom:8px;display:flex;align-items:center;cursor:pointer;" onclick="openDetail(${d.id});openTab('catalog');">
-            <div style="font-size:35px;">${d.poster}</div>
-            <div style="margin-left:12px;flex:1;"><div style="font-weight:700;">${d.title}</div><div style="color:#888;font-size:12px;">${d.eps.length} серий • ⭐ ${ar}/5</div></div>
-            <span style="color:#e94560;">→</span>
+        return `<div class="result-card" onclick="openDetail(${d.id});openTab('catalog');">
+            <div style="width:50px;height:65px;background-image:url('${d.poster}');background-size:cover;background-position:center;border-radius:8px;flex-shrink:0;"></div>
+            <div style="margin-left:12px;flex:1;"><div style="font-weight:700;font-size:14px;">${d.title}</div><div style="color:#8890a0;font-size:11px;">${d.eps.length} серий • ⭐ ${ar}/5</div></div>
+            <span style="color:#e94560;font-size:18px;">→</span>
         </div>`;
-    }).join('') : '<p style="color:#888;text-align:center;margin-top:20px;">Ничего не найдено</p>') : '<p style="color:#888;text-align:center;margin-top:20px;">Введи название дорамы</p>';
+    }).join('') : '<p style="color:#8890a0;text-align:center;margin-top:24px;">Ничего не найдено</p>') : '<p style="color:#8890a0;text-align:center;margin-top:24px;">Введи название дорамы</p>';
 }
 
 function play(did, en) {
