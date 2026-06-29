@@ -3,25 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="telegram-webapp-bg-color" content="#0a0a0a">
+    <meta name="telegram-webapp-header-color" content="#111111">
     <title>Дорама Хаб</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
         body { background: #0a0a0a; color: #fff; min-height: 100vh; }
         
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(145deg, #1a1a2e 0%, #0a0a0a 100%);
+            z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column;
+            transition: opacity 0.5s;
+        }
+        #splash.hide { opacity: 0; pointer-events: none; }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        
         .header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #111; position: sticky; top: 0; z-index: 10; }
         .ava { width: 40px; height: 40px; border-radius: 50%; background: #e94560; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; }
         .info { flex: 1; min-width: 0; }
-        .name { font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .name { font-weight: 700; font-size: 15px; }
         .uname { color: #888; font-size: 12px; }
-        .donate-top { background: #ffd700; color: #000; padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; white-space: nowrap; }
+        .donate-top { background: #ffd700; color: #000; padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; }
         
         .tabs { display: flex; background: #111; padding: 4px; margin: 12px 16px; border-radius: 12px; gap: 4px; }
         .tab { flex: 1; padding: 10px; border: none; background: transparent; color: #888; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 13px; transition: 0.2s; }
         .tab.active { background: #e94560; color: #fff; }
         
         .page { display: none; padding: 0 16px 120px; }
-        .page.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .page.active { display: block; }
         
         .section-title { font-size: 18px; font-weight: 700; margin: 20px 0 12px; }
         
@@ -32,7 +42,7 @@
         .mini-info { padding: 10px; }
         .mini-title { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
         .mini-meta { color: #888; font-size: 11px; }
-        .mini-rating { color: #ffd700; font-weight: 700; font-size: 12px; }
+        .mini-rating { color: #ffd700; font-weight: 700; font-size: 12px; margin-top: 2px; }
         
         .card { background: #1a1a1a; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #2a2a2a; }
         .card .poster { font-size: 50px; text-align: center; margin-bottom: 10px; }
@@ -41,12 +51,11 @@
         .card .desc { color: #aaa; font-size: 13px; margin: 8px 0; line-height: 1.4; }
         
         .eps { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-        .eps button { padding: 8px 12px; border-radius: 8px; border: 1px solid #4caf50; background: transparent; color: #4caf50; font-size: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .eps button { padding: 8px 12px; border-radius: 8px; border: 1px solid #4caf50; background: transparent; color: #4caf50; font-size: 12px; cursor: pointer; font-weight: 600; }
         .eps button:active { transform: scale(0.93); }
         .eps button.lock { border-color: #555; color: #555; }
         
-        .donate-btn { background: linear-gradient(135deg, #ffd700, #ffaa00); border: none; color: #000; padding: 12px; border-radius: 10px; width: 100%; margin-top: 12px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.2s; }
-        .donate-btn:active { transform: scale(0.97); }
+        .donate-btn { background: linear-gradient(135deg, #ffd700, #ffaa00); border: none; color: #000; padding: 12px; border-radius: 10px; width: 100%; margin-top: 12px; font-weight: 700; cursor: pointer; font-size: 14px; }
         
         .search-box { margin: 16px 0; }
         .search-box input { width: 100%; padding: 14px 16px; background: #1a1a1a; border: 2px solid #2a2a2a; border-radius: 14px; color: #fff; font-size: 15px; transition: 0.2s; }
@@ -63,7 +72,6 @@
         .stars-row { display: flex; align-items: center; gap: 4px; margin: 8px 0; }
         .star { font-size: 22px; color: #333; cursor: pointer; transition: 0.15s; }
         .star.on { color: #ffd700; }
-        .star:active { transform: scale(1.3); }
         .avg-text { color: #ffd700; font-size: 13px; margin-left: 6px; font-weight: 600; }
         
         .review-input { width: 100%; padding: 10px; background: #0a0a0a; border: 1px solid #333; border-radius: 10px; color: #fff; font-size: 13px; margin-top: 10px; resize: vertical; }
@@ -75,9 +83,17 @@
         .banner { background: linear-gradient(135deg, #1a1a2e, #2a1a2e); border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 16px; border: 1px solid #333; }
         .banner p { font-size: 13px; color: #ccc; }
         .banner button { background: #ffd700; color: #000; border: none; padding: 10px 20px; border-radius: 20px; margin-top: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
+        
+        .back-btn { background: none; border: none; color: #e94560; font-size: 16px; cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; gap: 4px; }
     </style>
 </head>
 <body>
+
+<div id="splash">
+    <div style="font-size:70px;animation:pulse 1.5s infinite;">🎬</div>
+    <div style="font-size:26px;font-weight:800;color:#fff;margin-top:16px;letter-spacing:1px;">ДОРАМА ХАБ</div>
+    <div style="color:#e94560;font-size:14px;margin-top:6px;">Твои любимые дорамы</div>
+</div>
 
 <div class="header">
     <div class="ava" id="ava">👤</div>
@@ -123,63 +139,43 @@ tg.ready(); tg.expand();
 let user = { name: 'Гость', uname: 'username' };
 let currentDorama = null;
 
-// БАЗА ДОРАМ
 let dramas = [
     {
-        id: 1,
-        title: 'Истинная красота',
-        poster: '💄',
-        year: 2020,
-        rating: 4.8,
+        id: 1, title: 'Истинная красота', poster: '💄', year: 2020, rating: 4.8,
         desc: 'Старшеклассница осваивает макияж и становится самой популярной девушкой в школе.',
-        reviews: [
-            {user:'Анна',stars:5,txt:'Лучшая дорама! Пересматривала 3 раза!'},
-            {user:'Вика',stars:4,txt:'Очень смешная и трогательная'}
-        ],
+        reviews: [{user:'Анна',stars:5,txt:'Лучшая дорама!'},{user:'Вика',stars:4,txt:'Очень смешная'}],
         eps: [
             {n:1,url:'https://vkvideo.ru/video-156580570_456247429'},
             {n:2,url:'https://vkvideo.ru/video-156580570_456247420'},
-            {n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},
-            {n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},
-            {n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},
+            {n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},
+            {n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},
             {n:15,url:''},{n:16,url:''}
         ]
     },
     {
-        id: 2,
-        title: 'Наследники',
-        poster: '👑',
-        year: 2013,
-        rating: 4.7,
-        desc: 'История любви между обычной девушкой и наследником огромной корпорации в элитной школе.',
-        reviews: [
-            {user:'Марина',stars:5,txt:'Классика! Смотрела на одном дыхании.'}
-        ],
+        id: 2, title: 'Наследники', poster: '👑', year: 2013, rating: 4.7,
+        desc: 'История любви между обычной девушкой и наследником огромной корпорации.',
+        reviews: [{user:'Марина',stars:5,txt:'Классика!'}],
         eps: [
-            {n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},
-            {n:6,url:''},{n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},
-            {n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},
-            {n:16,url:''},{n:17,url:''},{n:18,url:''},{n:19,url:''},{n:20,url:''}
+            {n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},
+            {n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''},
+            {n:17,url:''},{n:18,url:''},{n:19,url:''},{n:20,url:''}
         ]
     },
     {
-        id: 3,
-        title: 'Гоблин',
-        poster: '🗡️',
-        year: 2016,
-        rating: 4.9,
-        desc: 'Бессмертный гоблин ищет свою невесту, которая сможет снять с него проклятие вечной жизни.',
-        reviews: [
-            {user:'Оля',stars:5,txt:'Шедевр! Плакала на последней серии.'},
-            {user:'Даша',stars:5,txt:'Любимая дорама всех времён.'}
-        ],
+        id: 3, title: 'Гоблин', poster: '🗡️', year: 2016, rating: 4.9,
+        desc: 'Бессмертный гоблин ищет свою невесту, которая снимет проклятие.',
+        reviews: [{user:'Оля',stars:5,txt:'Шедевр!'}],
         eps: [
-            {n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},
-            {n:6,url:''},{n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},
-            {n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}
+            {n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},
+            {n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}
         ]
     }
 ];
+
+setTimeout(function(){
+    document.getElementById('splash').classList.add('hide');
+}, 1800);
 
 function loadUser() {
     if(tg.initDataUnsafe?.user) {
@@ -225,7 +221,7 @@ function openDetail(id) {
     let d = dramas.find(dd=>dd.id===id);
     let ar = avgR(d);
     dv.innerHTML = `
-        <button style="background:none;border:none;color:#e94560;font-size:16px;cursor:pointer;margin-bottom:12px;" onclick="showGrid()">← Назад</button>
+        <button class="back-btn" onclick="showGrid()">← Назад</button>
         <div class="card">
             <div class="poster">${d.poster}</div>
             <div class="title">${d.title}</div>
@@ -246,12 +242,9 @@ function doSearch() {
     let f = dramas.filter(d=>d.title.toLowerCase().includes(q));
     document.getElementById('s-res').innerHTML = q ? (f.length ? f.map(d=>{
         let ar = avgR(d);
-        return `<div class="mini-card" onclick="openDetail(${d.id});openTab('catalog');" style="display:flex;align-items:center;padding:12px;margin-bottom:8px;">
-            <div style="font-size:35px;width:50px;text-align:center;">${d.poster}</div>
-            <div style="flex:1;margin-left:12px;">
-                <div style="font-weight:700;">${d.title}</div>
-                <div style="color:#888;font-size:12px;">${d.eps.length} серий • ⭐ ${ar}/5</div>
-            </div>
+        return `<div style="background:#1a1a1a;border-radius:14px;padding:12px;margin-bottom:8px;display:flex;align-items:center;cursor:pointer;" onclick="openDetail(${d.id});openTab('catalog');">
+            <div style="font-size:35px;">${d.poster}</div>
+            <div style="margin-left:12px;flex:1;"><div style="font-weight:700;">${d.title}</div><div style="color:#888;font-size:12px;">${d.eps.length} серий • ⭐ ${ar}/5</div></div>
             <span style="color:#e94560;">→</span>
         </div>`;
     }).join('') : '<p style="color:#888;text-align:center;margin-top:20px;">Ничего не найдено</p>') : '<p style="color:#888;text-align:center;margin-top:20px;">Введи название дорамы</p>';
@@ -268,16 +261,15 @@ function play(did, en) {
 function closePlayer() { document.getElementById('player').classList.remove('active'); document.getElementById('p-frame').innerHTML=''; }
 
 function donate() {
-    tg.openTelegramLink('https://t.me/drama_support');
-    tg.showAlert('💛 Спасибо за поддержку!');
+    tg.openTelegramLink('https://t.me/niklove666');
+    tg.showAlert('💛 Спасибо за поддержку! Буду рад звёздам ⭐');
 }
-
 function rate(id,s) {
     let d=dramas.find(dd=>dd.id===id);
     let r=d.reviews.find(rr=>rr.user===user.name);
     if(r) r.stars=s; else d.reviews.push({user:user.name,stars:s,txt:''});
     if(currentDorama===id) openDetail(id);
-    tg.showAlert('⭐ Оценка '+s+'/5!');
+    tg.showAlert('⭐ '+s+'/5!');
 }
 function addRev(id) {
     let txt=document.getElementById('rt-'+id).value; if(!txt) return;
