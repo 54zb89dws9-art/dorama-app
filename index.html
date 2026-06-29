@@ -7,21 +7,11 @@
     <meta name="telegram-webapp-header-color" content="#1a1a2e">
     <title>Дорама Хаб</title>
     <style>
-        :root {
-            --bg: #0f0f1a;
-            --card: rgba(255,255,255,0.03);
-            --accent: #e94560;
-            --gold: #ffd700;
-            --text: #fff;
-            --text2: #8890a0;
-            --glass: rgba(255,255,255,0.05);
-            --border: rgba(255,255,255,0.06);
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
         body {
-            background: var(--bg);
+            background: #0f0f1a;
             background-image: radial-gradient(ellipse at top, #1a1a35 0%, #0f0f1a 60%);
-            color: var(--text);
+            color: #fff;
             min-height: 100vh;
             -webkit-tap-highlight-color: transparent;
         }
@@ -39,7 +29,7 @@
         .header {
             display: flex; align-items: center; gap: 12px; padding: 12px 16px;
             background: rgba(15,15,26,0.8); backdrop-filter: blur(20px);
-            position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.06);
         }
         .ava {
             width: 38px; height: 38px; border-radius: 50%;
@@ -49,8 +39,8 @@
             box-shadow: 0 4px 15px rgba(233,69,96,0.3);
         }
         .info { flex: 1; min-width: 0; }
-        .name { font-weight: 700; font-size: 14px; letter-spacing: 0.3px; }
-        .uname { color: var(--text2); font-size: 11px; }
+        .name { font-weight: 700; font-size: 14px; }
+        .uname { color: #8890a0; font-size: 11px; }
         .donate-top {
             background: linear-gradient(135deg, #ffd700, #f0a500);
             color: #000; padding: 8px 14px; border-radius: 20px;
@@ -60,56 +50,47 @@
         .donate-top:active { transform: scale(0.94); }
         
         .tabs {
-            display: flex; background: var(--glass); padding: 5px; margin: 14px 16px;
+            display: flex; background: rgba(255,255,255,0.05); padding: 5px; margin: 14px 16px;
             border-radius: 14px; gap: 4px; backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255,255,255,0.06);
         }
         .tab {
             flex: 1; padding: 11px 8px; border: none; background: transparent;
-            color: var(--text2); border-radius: 11px; font-weight: 600;
+            color: #8890a0; border-radius: 11px; font-weight: 600;
             cursor: pointer; font-size: 12px; transition: 0.25s;
             display: flex; align-items: center; justify-content: center; gap: 5px;
         }
-        .tab.active { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(233,69,96,0.35); }
+        .tab.active { background: #e94560; color: #fff; box-shadow: 0 4px 15px rgba(233,69,96,0.35); }
         
         .page { display: none; padding: 0 16px 120px; animation: slideUp 0.4s ease; }
         .page.active { display: block; }
-        .section-title { font-size: 17px; font-weight: 700; margin: 18px 0 12px; display: flex; align-items: center; gap: 8px; }
+        .section-title { font-size: 17px; font-weight: 700; margin: 18px 0 12px; }
         
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .mini-card {
-            background: var(--card); border-radius: 16px; overflow: hidden;
-            cursor: pointer; transition: 0.2s; border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.03); border-radius: 16px; overflow: hidden;
+            cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.06);
         }
-        .mini-card:active { transform: scale(0.95); border-color: var(--accent); }
+        .mini-card:active { transform: scale(0.95); border-color: #e94560; }
         .mini-poster {
-            height: 140px; background-size: cover; background-position: center;
-            background-repeat: no-repeat; position: relative;
-        }
-        .mini-poster .play-icon {
-            position: absolute; bottom: 8px; right: 8px;
-            background: rgba(0,0,0,0.6); width: 30px; height: 30px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 14px;
+            height: 130px; display: flex; align-items: center; justify-content: center;
+            font-size: 50px; background: linear-gradient(135deg, #1a1a2e, #16213e);
         }
         .mini-info { padding: 10px 12px; }
         .mini-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
-        .mini-meta { color: var(--text2); font-size: 10px; }
-        .mini-rating { color: var(--gold); font-weight: 700; font-size: 11px; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
-        .badge { background: rgba(233,69,96,0.15); color: var(--accent); padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+        .mini-meta { color: #8890a0; font-size: 10px; }
+        .mini-rating { color: #ffd700; font-weight: 700; font-size: 11px; margin-top: 4px; }
+        .badge { background: rgba(233,69,96,0.15); color: #e94560; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
         
         .card {
-            background: var(--card); border-radius: 20px; padding: 20px;
-            border: 1px solid var(--border); backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.03); border-radius: 20px; padding: 20px;
+            border: 1px solid rgba(255,255,255,0.06);
         }
-        .card-poster {
-            width: 100%; height: 220px; background-size: cover;
-            background-position: center; border-radius: 14px; margin-bottom: 14px;
-        }
-        .card .title { font-size: 19px; font-weight: 700; letter-spacing: 0.3px; }
-        .card .meta { color: var(--text2); font-size: 12px; margin: 6px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .card .poster { font-size: 60px; text-align: center; margin-bottom: 14px; padding: 20px; }
+        .card .title { font-size: 19px; font-weight: 700; }
+        .card .meta { color: #8890a0; font-size: 12px; margin: 6px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .card .desc { color: #b0b8c0; font-size: 13px; margin: 10px 0; line-height: 1.5; }
+        .genre-tag { display: inline-block; background: rgba(233,69,96,0.1); color: #e94560; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
         
         .eps { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
         .eps button {
@@ -130,51 +111,49 @@
         
         .search-box { margin: 16px 0; }
         .search-box input {
-            width: 100%; padding: 14px 18px; background: var(--card);
-            border: 1px solid var(--border); border-radius: 14px;
-            color: var(--text); font-size: 14px; transition: 0.3s;
-            backdrop-filter: blur(10px);
+            width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
+            color: #fff; font-size: 14px; transition: 0.3s;
         }
-        .search-box input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(233,69,96,0.1); }
+        .search-box input:focus { outline: none; border-color: #e94560; }
         .search-box input::placeholder { color: #555; }
         
         .player-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; flex-direction: column; }
-        .player-modal.active { display: flex; animation: slideUp 0.3s; }
+        .player-modal.active { display: flex; }
         .player-top { padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #111; }
         .player-top span { font-weight: 600; font-size: 13px; }
-        .player-close { background: var(--accent); border: none; color: #fff; padding: 7px 14px; border-radius: 18px; font-weight: 700; cursor: pointer; font-size: 12px; }
+        .player-close { background: #e94560; border: none; color: #fff; padding: 7px 14px; border-radius: 18px; font-weight: 700; cursor: pointer; font-size: 12px; }
         .player-frame { flex: 1; background: #000; }
         .player-frame iframe { width: 100%; height: 100%; border: none; }
         
         .stars-row { display: flex; align-items: center; gap: 5px; margin: 10px 0; }
         .star { font-size: 24px; color: #2a2a3a; cursor: pointer; transition: 0.15s; }
-        .star.on { color: var(--gold); }
+        .star.on { color: #ffd700; }
         .star:active { transform: scale(1.3); }
-        .avg-text { color: var(--gold); font-size: 13px; margin-left: 8px; font-weight: 600; }
+        .avg-text { color: #ffd700; font-size: 13px; margin-left: 8px; font-weight: 600; }
         
-        .review-input { width: 100%; padding: 10px 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; color: #fff; font-size: 12px; margin-top: 10px; resize: vertical; }
-        .review-btn { background: var(--accent); border: none; color: #fff; padding: 8px 16px; border-radius: 8px; margin-top: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
+        .review-input { width: 100%; padding: 10px 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; color: #fff; font-size: 12px; margin-top: 10px; resize: vertical; }
+        .review-btn { background: #e94560; border: none; color: #fff; padding: 8px 16px; border-radius: 8px; margin-top: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
         .review-list { max-height: 130px; overflow-y: auto; margin-top: 10px; }
         .review-item { padding: 8px 10px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 5px; font-size: 11px; }
-        .review-item b { color: var(--accent); }
+        .review-item b { color: #e94560; }
         
         .banner {
             background: linear-gradient(135deg, rgba(233,69,96,0.1), rgba(255,215,0,0.05));
             border-radius: 16px; padding: 16px; text-align: center;
-            margin-bottom: 18px; border: 1px solid var(--border);
+            margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.06);
         }
         .banner p { font-size: 13px; color: #b0b8c0; }
         .banner button {
-            background: var(--gold); color: #000; border: none;
+            background: #ffd700; color: #000; border: none;
             padding: 10px 22px; border-radius: 20px; margin-top: 8px;
             font-weight: 700; cursor: pointer; font-size: 13px;
             box-shadow: 0 4px 15px rgba(255,215,0,0.2);
         }
         
-        .back-btn { background: none; border: none; color: var(--accent); font-size: 15px; cursor: pointer; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; font-weight: 600; }
-        .result-card { background: var(--card); border-radius: 14px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
-        .result-card:active { border-color: var(--accent); }
-        .genre-tag { display: inline-block; background: rgba(233,69,96,0.1); color: #e94560; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        .back-btn { background: none; border: none; color: #e94560; font-size: 15px; cursor: pointer; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+        .result-card { background: rgba(255,255,255,0.03); border-radius: 14px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.06); transition: 0.2s; }
+        .result-card:active { border-color: #e94560; }
     </style>
 </head>
 <body>
@@ -231,10 +210,7 @@ let currentDorama = null;
 
 let dramas = [
     {
-        id: 1,
-        title: 'Истинная красота',
-        poster: 'https://i.ibb.co/0jKzY5n/true-beauty.jpg',
-        year: 2020, rating: 4.8, genre: 'Романтика',
+        id: 1, title: 'Истинная красота', poster: '💄', year: 2020, rating: 4.8, genre: 'Романтика',
         desc: 'Старшеклассница осваивает макияж и становится самой популярной девушкой в школе.',
         reviews: [{user:'Анна',stars:5,txt:'Лучшая дорама!'},{user:'Вика',stars:4,txt:'Очень смешная'}],
         eps: [
@@ -246,10 +222,7 @@ let dramas = [
         ]
     },
     {
-        id: 2,
-        title: 'Наследники',
-        poster: 'https://i.ibb.co/qYzLd0R/heirs.jpg',
-        year: 2013, rating: 4.7, genre: 'Романтика',
+        id: 2, title: 'Наследники', poster: '👑', year: 2013, rating: 4.7, genre: 'Романтика',
         desc: 'История любви между обычной девушкой и наследником огромной корпорации.',
         reviews: [{user:'Марина',stars:5,txt:'Классика!'}],
         eps: [
@@ -259,10 +232,7 @@ let dramas = [
         ]
     },
     {
-        id: 3,
-        title: 'Гоблин',
-        poster: 'https://i.ibb.co/5YtPvXW/goblin.jpg',
-        year: 2016, rating: 4.9, genre: 'Фэнтези',
+        id: 3, title: 'Гоблин', poster: '🗡️', year: 2016, rating: 4.9, genre: 'Фэнтези',
         desc: 'Бессмертный гоблин ищет свою невесту, которая снимет проклятие.',
         reviews: [{user:'Оля',stars:5,txt:'Шедевр!'}],
         eps: [
@@ -271,10 +241,7 @@ let dramas = [
         ]
     },
     {
-        id: 4,
-        title: 'Потомки солнца',
-        poster: 'https://i.ibb.co/3YdJqXk/dots.jpg',
-        year: 2016, rating: 4.8, genre: 'Романтика',
+        id: 4, title: 'Потомки солнца', poster: '🌸', year: 2016, rating: 4.8, genre: 'Романтика',
         desc: 'История любви капитана спецназа и военного врача.',
         reviews: [{user:'Лена',stars:5,txt:'Потрясающе!'}],
         eps: [
@@ -283,10 +250,7 @@ let dramas = [
         ]
     },
     {
-        id: 5,
-        title: 'Что случилось с секретарём Ким',
-        poster: 'https://i.ibb.co/dPqYLrY/kim.jpg',
-        year: 2018, rating: 4.7, genre: 'Комедия',
+        id: 5, title: 'Секретарь Ким', poster: '😂', year: 2018, rating: 4.7, genre: 'Комедия',
         desc: 'Идеальный начальник и его секретарь, которая решает уволиться.',
         reviews: [{user:'Катя',stars:5,txt:'Очень смешная!'}],
         eps: [
@@ -295,10 +259,7 @@ let dramas = [
         ]
     },
     {
-        id: 6,
-        title: 'Мой ID — Каннамская красота',
-        poster: 'https://i.ibb.co/7jMYm0z/gangnam.jpg',
-        year: 2018, rating: 4.6, genre: 'Романтика',
+        id: 6, title: 'Каннамская красота', poster: '💝', year: 2018, rating: 4.6, genre: 'Романтика',
         desc: 'Девушка делает пластику и пытается начать новую жизнь в универе.',
         reviews: [{user:'Настя',stars:4,txt:'Интересная тема'}],
         eps: [
@@ -311,10 +272,14 @@ let dramas = [
 // Убираем заставку
 setTimeout(function(){ 
     var s = document.getElementById('splash');
-    s.style.opacity = '0';
-    s.style.pointerEvents = 'none';
-    setTimeout(function(){ s.style.display = 'none'; }, 500);
-}, 2000);
+    if(s) {
+        s.style.opacity = '0';
+        s.style.pointerEvents = 'none';
+        setTimeout(function(){ 
+            if(s) s.style.display = 'none'; 
+        }, 600);
+    }
+}, 2500);
 
 function loadUser() {
     if(tg.initDataUnsafe?.user) {
@@ -342,9 +307,7 @@ function showGrid() {
     document.getElementById('grid-view').innerHTML = dramas.map((d,i)=>{
         let ar = avgR(d);
         return `<div class="mini-card" onclick="openDetail(${d.id})">
-            <div class="mini-poster" style="background-image:url('${d.poster}');">
-                <div class="play-icon">▶️</div>
-            </div>
+            <div class="mini-poster">${d.poster}</div>
             <div class="mini-info">
                 <div class="mini-title">${d.title}</div>
                 <div class="mini-meta">${d.eps.length} серий • ${d.year}</div>
@@ -364,7 +327,7 @@ function openDetail(id) {
     dv.innerHTML = `
         <button class="back-btn" onclick="showGrid()">← Назад</button>
         <div class="card">
-            <div class="card-poster" style="background-image:url('${d.poster}');"></div>
+            <div class="poster">${d.poster}</div>
             <div class="title">${d.title}</div>
             <div class="meta">
                 ⭐ ${d.rating} <span>•</span> ${d.eps.length} серий <span>•</span> ${d.year}
@@ -387,7 +350,7 @@ function doSearch() {
     document.getElementById('s-res').innerHTML = q ? (f.length ? f.map(d=>{
         let ar = avgR(d);
         return `<div class="result-card" onclick="openDetail(${d.id});openTab('catalog');">
-            <div style="width:50px;height:65px;background-image:url('${d.poster}');background-size:cover;background-position:center;border-radius:8px;flex-shrink:0;"></div>
+            <div style="font-size:35px;width:50px;text-align:center;">${d.poster}</div>
             <div style="margin-left:12px;flex:1;"><div style="font-weight:700;font-size:14px;">${d.title}</div><div style="color:#8890a0;font-size:11px;">${d.eps.length} серий • ⭐ ${ar}/5</div></div>
             <span style="color:#e94560;font-size:18px;">→</span>
         </div>`;
