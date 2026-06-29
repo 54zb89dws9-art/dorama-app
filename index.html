@@ -8,55 +8,73 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
         body { background: #0a0a0a; color: #fff; min-height: 100vh; }
         
-        .header { display: flex; align-items: center; gap: 12px; padding: 16px; background: #111; }
-        .ava { width: 44px; height: 44px; border-radius: 50%; background: #e94560; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
-        .info { flex: 1; }
-        .name { font-weight: 700; font-size: 16px; }
-        .uname { color: #888; font-size: 13px; }
+        .header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #111; position: sticky; top: 0; z-index: 10; }
+        .ava { width: 40px; height: 40px; border-radius: 50%; background: #e94560; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+        .info { flex: 1; min-width: 0; }
+        .name { font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .uname { color: #888; font-size: 12px; }
+        .donate-top { background: #ffd700; color: #000; padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; white-space: nowrap; }
         
-        .tabs { display: flex; background: #111; padding: 4px; margin: 16px; border-radius: 12px; gap: 4px; }
-        .tab { flex: 1; padding: 10px; border: none; background: transparent; color: #888; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 13px; }
+        .tabs { display: flex; background: #111; padding: 4px; margin: 12px 16px; border-radius: 12px; gap: 4px; }
+        .tab { flex: 1; padding: 10px; border: none; background: transparent; color: #888; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 13px; transition: 0.2s; }
         .tab.active { background: #e94560; color: #fff; }
         
-        .page { display: none; padding: 0 16px 100px; }
-        .page.active { display: block; }
+        .page { display: none; padding: 0 16px 120px; }
+        .page.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .section-title { font-size: 18px; font-weight: 700; margin: 20px 0 12px; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .mini-card { background: #1a1a1a; border-radius: 14px; overflow: hidden; cursor: pointer; transition: 0.2s; border: 1px solid #2a2a2a; }
+        .mini-card:active { transform: scale(0.96); border-color: #e94560; }
+        .mini-poster { height: 130px; display: flex; align-items: center; justify-content: center; font-size: 50px; background: linear-gradient(135deg, #1a1a2e, #16213e); }
+        .mini-info { padding: 10px; }
+        .mini-title { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+        .mini-meta { color: #888; font-size: 11px; }
+        .mini-rating { color: #ffd700; font-weight: 700; font-size: 12px; }
         
         .card { background: #1a1a1a; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #2a2a2a; }
-        .card .poster { font-size: 45px; text-align: center; margin-bottom: 10px; }
+        .card .poster { font-size: 50px; text-align: center; margin-bottom: 10px; }
         .card .title { font-size: 18px; font-weight: 700; }
         .card .meta { color: #888; font-size: 12px; margin: 4px 0; }
-        .card .desc { color: #aaa; font-size: 13px; margin: 8px 0; }
+        .card .desc { color: #aaa; font-size: 13px; margin: 8px 0; line-height: 1.4; }
         
         .eps { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-        .eps button { padding: 8px 12px; border-radius: 8px; border: 1px solid #4caf50; background: transparent; color: #4caf50; font-size: 12px; cursor: pointer; font-weight: 600; }
-        .eps button.lock { border-color: #e94560; color: #e94560; }
+        .eps button { padding: 8px 12px; border-radius: 8px; border: 1px solid #4caf50; background: transparent; color: #4caf50; font-size: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .eps button:active { transform: scale(0.93); }
+        .eps button.lock { border-color: #555; color: #555; }
         
-        .donate-btn { background: linear-gradient(135deg, #ffd700, #ffaa00); border: none; color: #000; padding: 12px; border-radius: 10px; width: 100%; margin-top: 10px; font-weight: 700; cursor: pointer; font-size: 14px; }
-        .open-btn { background: #4caf50; border: none; color: #fff; padding: 10px; border-radius: 10px; width: 100%; margin-top: 6px; font-weight: 700; cursor: pointer; font-size: 14px; }
+        .donate-btn { background: linear-gradient(135deg, #ffd700, #ffaa00); border: none; color: #000; padding: 12px; border-radius: 10px; width: 100%; margin-top: 12px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .donate-btn:active { transform: scale(0.97); }
         
         .search-box { margin: 16px 0; }
-        .search-box input { width: 100%; padding: 12px 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: #fff; font-size: 15px; }
+        .search-box input { width: 100%; padding: 14px 16px; background: #1a1a1a; border: 2px solid #2a2a2a; border-radius: 14px; color: #fff; font-size: 15px; transition: 0.2s; }
+        .search-box input:focus { outline: none; border-color: #e94560; }
         
         .player-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; flex-direction: column; }
         .player-modal.active { display: flex; }
         .player-top { padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #111; }
+        .player-top span { font-weight: 600; font-size: 14px; }
         .player-close { background: #e94560; border: none; color: #fff; padding: 8px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; }
-        .player-frame { flex: 1; }
+        .player-frame { flex: 1; background: #000; }
         .player-frame iframe { width: 100%; height: 100%; border: none; }
         
-        .admin-panel { background: #1a0a0a; border: 1px solid #e94560; border-radius: 16px; padding: 16px; margin-top: 16px; display: none; }
-        .admin-panel h3 { color: #e94560; margin-bottom: 12px; }
-        .admin-panel input, .admin-panel textarea, .admin-panel select { width: 100%; padding: 10px; background: #0a0a0a; border: 1px solid #333; border-radius: 8px; color: #fff; margin-bottom: 8px; font-size: 14px; }
-        .admin-panel button { background: #e94560; border: none; color: #fff; padding: 10px; border-radius: 8px; width: 100%; font-weight: 700; cursor: pointer; }
-        
-        .review-input { width: 100%; padding: 8px; background: #0a0a0a; border: 1px solid #333; border-radius: 8px; color: #fff; font-size: 12px; margin-top: 8px; resize: vertical; }
-        .review-btn { background: #e94560; border: none; color: #fff; padding: 8px 16px; border-radius: 8px; margin-top: 6px; cursor: pointer; font-size: 12px; }
-        .review-list { max-height: 120px; overflow-y: auto; margin-top: 8px; }
-        .review-item { padding: 6px 8px; background: #111; border-radius: 8px; margin-bottom: 4px; font-size: 12px; }
-        .review-item b { color: #e94560; }
-        .stars-row { display: flex; gap: 4px; margin: 8px 0; }
-        .star { font-size: 22px; color: #333; cursor: pointer; }
+        .stars-row { display: flex; align-items: center; gap: 4px; margin: 8px 0; }
+        .star { font-size: 22px; color: #333; cursor: pointer; transition: 0.15s; }
         .star.on { color: #ffd700; }
+        .star:active { transform: scale(1.3); }
+        .avg-text { color: #ffd700; font-size: 13px; margin-left: 6px; font-weight: 600; }
+        
+        .review-input { width: 100%; padding: 10px; background: #0a0a0a; border: 1px solid #333; border-radius: 10px; color: #fff; font-size: 13px; margin-top: 10px; resize: vertical; }
+        .review-btn { background: #e94560; border: none; color: #fff; padding: 8px 16px; border-radius: 8px; margin-top: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .review-list { max-height: 140px; overflow-y: auto; margin-top: 10px; }
+        .review-item { padding: 8px 10px; background: #111; border-radius: 10px; margin-bottom: 6px; font-size: 12px; }
+        .review-item b { color: #e94560; }
+        
+        .banner { background: linear-gradient(135deg, #1a1a2e, #2a1a2e); border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 16px; border: 1px solid #333; }
+        .banner p { font-size: 13px; color: #ccc; }
+        .banner button { background: #ffd700; color: #000; border: none; padding: 10px 20px; border-radius: 20px; margin-top: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -67,6 +85,7 @@
         <div class="name" id="uname">Гость</div>
         <div class="uname" id="uuser">@username</div>
     </div>
+    <button class="donate-top" onclick="donate()">💛 Поддержать</button>
 </div>
 
 <div class="tabs">
@@ -75,20 +94,13 @@
 </div>
 
 <div class="page active" id="catalog">
-    <p style="text-align:center;color:#ffd700;margin:12px 0;font-size:14px;">💛 Поддержи проект — отправь Stars на @drama_support</p>
-    <div id="cat-list"></div>
-    <div class="admin-panel" id="admin">
-        <h3>👑 Добавить дораму</h3>
-        <input id="a-title" placeholder="Название">
-        <input id="a-poster" placeholder="Эмодзи (💄👑)">
-        <input id="a-year" placeholder="Год">
-        <input id="a-rating" placeholder="Рейтинг (4.8)">
-        <textarea id="a-desc" placeholder="Описание" rows="2"></textarea>
-        <input id="a-ep1" placeholder="Ссылка на 1 серию">
-        <input id="a-ep2" placeholder="Ссылка на 2 серию">
-        <input id="a-total" placeholder="Всего серий" value="16">
-        <button onclick="addD()">✅ Добавить</button>
+    <div class="banner">
+        <p>💛 Нравится приложение? Поддержи проект звёздами!</p>
+        <button onclick="donate()">⭐ Отправить Stars</button>
     </div>
+    <div class="section-title">🔥 Популярные дорамы</div>
+    <div class="grid" id="grid-view"></div>
+    <div id="detail-view" style="display:none;"></div>
 </div>
 
 <div class="page" id="search">
@@ -109,26 +121,72 @@ const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand();
 
 let user = { name: 'Гость', uname: 'username' };
+let currentDorama = null;
 
-let dramas = [{
-    id: 1, title: 'Истинная красота', poster: '💄', year: 2020, rating: 4.8,
-    desc: 'Старшеклассница осваивает макияж и становится популярной',
-    reviews: [{user:'Анна',stars:5,txt:'Лучшая дорама!'}],
-    eps: [
-        {n:1,url:'https://vkvideo.ru/video-156580570_456247429'},
-        {n:2,url:'https://vkvideo.ru/video-156580570_456247420'},
-        {n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},
-        {n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},
-        {n:15,url:''},{n:16,url:''}
-    ]
-}];
+// БАЗА ДОРАМ
+let dramas = [
+    {
+        id: 1,
+        title: 'Истинная красота',
+        poster: '💄',
+        year: 2020,
+        rating: 4.8,
+        desc: 'Старшеклассница осваивает макияж и становится самой популярной девушкой в школе.',
+        reviews: [
+            {user:'Анна',stars:5,txt:'Лучшая дорама! Пересматривала 3 раза!'},
+            {user:'Вика',stars:4,txt:'Очень смешная и трогательная'}
+        ],
+        eps: [
+            {n:1,url:'https://vkvideo.ru/video-156580570_456247429'},
+            {n:2,url:'https://vkvideo.ru/video-156580570_456247420'},
+            {n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},
+            {n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},
+            {n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},
+            {n:15,url:''},{n:16,url:''}
+        ]
+    },
+    {
+        id: 2,
+        title: 'Наследники',
+        poster: '👑',
+        year: 2013,
+        rating: 4.7,
+        desc: 'История любви между обычной девушкой и наследником огромной корпорации в элитной школе.',
+        reviews: [
+            {user:'Марина',stars:5,txt:'Классика! Смотрела на одном дыхании.'}
+        ],
+        eps: [
+            {n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},
+            {n:6,url:''},{n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},
+            {n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},
+            {n:16,url:''},{n:17,url:''},{n:18,url:''},{n:19,url:''},{n:20,url:''}
+        ]
+    },
+    {
+        id: 3,
+        title: 'Гоблин',
+        poster: '🗡️',
+        year: 2016,
+        rating: 4.9,
+        desc: 'Бессмертный гоблин ищет свою невесту, которая сможет снять с него проклятие вечной жизни.',
+        reviews: [
+            {user:'Оля',stars:5,txt:'Шедевр! Плакала на последней серии.'},
+            {user:'Даша',stars:5,txt:'Любимая дорама всех времён.'}
+        ],
+        eps: [
+            {n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},
+            {n:6,url:''},{n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},
+            {n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}
+        ]
+    }
+];
 
 function loadUser() {
     if(tg.initDataUnsafe?.user) {
         user.name = tg.initDataUnsafe.user.first_name || 'Гость';
         user.uname = tg.initDataUnsafe.user.username || 'username';
     }
-    document.getElementById('ava').textContent = user.name[0];
+    document.getElementById('ava').textContent = user.name[0] || '👤';
     document.getElementById('uname').textContent = user.name;
     document.getElementById('uuser').textContent = '@'+user.uname;
 }
@@ -138,33 +196,65 @@ function openTab(t) {
     event.target.classList.add('active');
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(t).classList.add('active');
-    if(t==='catalog') renderCat();
+    if(t==='catalog') { showGrid(); document.getElementById('detail-view').style.display='none'; }
 }
 
 function avgR(d) { return d.reviews.length ? (d.reviews.reduce((a,r)=>a+r.stars,0)/d.reviews.length).toFixed(1) : 0; }
 
-function renderCat() {
-    document.getElementById('cat-list').innerHTML = dramas.map(d=>{
+function showGrid() {
+    document.getElementById('grid-view').style.display = 'grid';
+    document.getElementById('detail-view').style.display = 'none';
+    document.getElementById('grid-view').innerHTML = dramas.map(d=>{
         let ar = avgR(d);
-        return `<div class="card">
+        return `<div class="mini-card" onclick="openDetail(${d.id})">
+            <div class="mini-poster">${d.poster}</div>
+            <div class="mini-info">
+                <div class="mini-title">${d.title}</div>
+                <div class="mini-meta">${d.eps.length} серий • ${d.year}</div>
+                <div class="mini-rating">⭐ ${ar} / 5</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function openDetail(id) {
+    currentDorama = id;
+    document.getElementById('grid-view').style.display = 'none';
+    let dv = document.getElementById('detail-view');
+    dv.style.display = 'block';
+    let d = dramas.find(dd=>dd.id===id);
+    let ar = avgR(d);
+    dv.innerHTML = `
+        <button style="background:none;border:none;color:#e94560;font-size:16px;cursor:pointer;margin-bottom:12px;" onclick="showGrid()">← Назад</button>
+        <div class="card">
             <div class="poster">${d.poster}</div>
             <div class="title">${d.title}</div>
             <div class="meta">⭐ ${d.rating} • ${d.eps.length} серий • ${d.year}</div>
             <div class="desc">${d.desc}</div>
-            <div class="stars-row">${[1,2,3,4,5].map(i=>`<span class="star ${i<=ar?'on':''}" onclick="rate(${d.id},${i})">★</span>`).join('')} <span style="color:#ffd700;font-size:13px;">${ar}/5</span></div>
+            <div class="stars-row">${[1,2,3,4,5].map(i=>`<span class="star ${i<=ar?'on':''}" onclick="rate(${d.id},${i})">★</span>`).join('')}<span class="avg-text">${ar}/5</span></div>
             <div class="eps">${d.eps.map(e=>`<button class="${e.url?'':'lock'}" onclick="play(${d.id},${e.n})">С${e.n} ${e.url?'▶️':'🔒'}</button>`).join('')}</div>
             <button class="donate-btn" onclick="donate()">💛 Поддержать проект</button>
             <textarea class="review-input" id="rt-${d.id}" placeholder="Оставь отзыв..."></textarea>
             <button class="review-btn" onclick="addRev(${d.id})">📝 Отправить</button>
             <div class="review-list">${(d.reviews||[]).map(r=>`<div class="review-item"><b>${r.user}</b> ${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}<br>${r.txt}</div>`).join('')}</div>
-        </div>`;
-    }).join('');
+        </div>
+    `;
 }
 
 function doSearch() {
     let q = document.getElementById('s-input').value.toLowerCase();
     let f = dramas.filter(d=>d.title.toLowerCase().includes(q));
-    document.getElementById('s-res').innerHTML = q ? (f.length ? f.map(d=>`<div class="card"><div class="poster">${d.poster}</div><div class="title">${d.title}</div><div class="meta">⭐ ${d.rating} • ${d.eps.length} серий</div><button class="open-btn" onclick="openTab('catalog')">Смотреть</button></div>`).join('') : '<p style="color:#888;text-align:center;">Ничего не найдено</p>') : '<p style="color:#888;text-align:center;">Введи название</p>';
+    document.getElementById('s-res').innerHTML = q ? (f.length ? f.map(d=>{
+        let ar = avgR(d);
+        return `<div class="mini-card" onclick="openDetail(${d.id});openTab('catalog');" style="display:flex;align-items:center;padding:12px;margin-bottom:8px;">
+            <div style="font-size:35px;width:50px;text-align:center;">${d.poster}</div>
+            <div style="flex:1;margin-left:12px;">
+                <div style="font-weight:700;">${d.title}</div>
+                <div style="color:#888;font-size:12px;">${d.eps.length} серий • ⭐ ${ar}/5</div>
+            </div>
+            <span style="color:#e94560;">→</span>
+        </div>`;
+    }).join('') : '<p style="color:#888;text-align:center;margin-top:20px;">Ничего не найдено</p>') : '<p style="color:#888;text-align:center;margin-top:20px;">Введи название дорамы</p>';
 }
 
 function play(did, en) {
@@ -186,31 +276,18 @@ function rate(id,s) {
     let d=dramas.find(dd=>dd.id===id);
     let r=d.reviews.find(rr=>rr.user===user.name);
     if(r) r.stars=s; else d.reviews.push({user:user.name,stars:s,txt:''});
-    renderCat(); tg.showAlert('⭐ Оценка '+s+'/5!');
+    if(currentDorama===id) openDetail(id);
+    tg.showAlert('⭐ Оценка '+s+'/5!');
 }
 function addRev(id) {
     let txt=document.getElementById('rt-'+id).value; if(!txt) return;
     let d=dramas.find(dd=>dd.id===id);
     let r=d.reviews.find(rr=>rr.user===user.name);
     if(r) r.txt=txt; else d.reviews.push({user:user.name,stars:5,txt:txt});
-    document.getElementById('rt-'+id).value=''; renderCat(); tg.showAlert('📝 Отзыв добавлен!');
+    openDetail(id); tg.showAlert('📝 Отзыв добавлен!');
 }
 
-// Админка (открывается из консоли браузера командой: toggleAdmin())
-function toggleAdmin() {
-    let p=document.getElementById('admin');
-    p.style.display=p.style.display==='none'?'block':'none';
-}
-function addD() {
-    let t=document.getElementById('a-title').value; if(!t) { tg.showAlert('Введи название!'); return; }
-    let ep=[], total=parseInt(document.getElementById('a-total').value)||16;
-    for(let i=1;i<=total;i++) ep.push({n:i,url:i===1?document.getElementById('a-ep1').value:i===2?document.getElementById('a-ep2').value:''});
-    dramas.push({id:Date.now(),title:t,poster:document.getElementById('a-poster').value||'🎬',year:document.getElementById('a-year').value||'2024',rating:document.getElementById('a-rating').value||'4.5',desc:document.getElementById('a-desc').value||'Описание',reviews:[],eps:ep});
-    ['a-title','a-poster','a-desc','a-ep1','a-ep2'].forEach(x=>document.getElementById(x).value='');
-    renderCat(); tg.showAlert('✅ Добавлено!');
-}
-
-loadUser(); renderCat();
+loadUser(); showGrid();
 </script>
 </body>
 </html>
