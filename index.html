@@ -3,225 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="telegram-webapp-bg-color" content="#0f0f1a">
-    <meta name="telegram-webapp-header-color" content="#1a1a2e">
-    <title>Дорама Хаб</title>
+    <meta name="telegram-webapp-bg-color" content="#0a0a0f">
+    <meta name="telegram-webapp-header-color" content="#111118">
+    <title>50/50 - Игра</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-        body { background: #0f0f1a; background-image: radial-gradient(ellipse at top, #1a1a35 0%, #0f0f1a 60%); color: #fff; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+        body {
+            background: #0a0a0f;
+            background-image: radial-gradient(ellipse at 50% 0%, #1a1a30 0%, #0a0a0f 70%);
+            color: #fff;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
         
-        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(160deg, #1a1a35 0%, #0f0f1a 50%, #1a0a15 100%); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s; }
-        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-        @keyframes glow { 0%,100% { text-shadow: 0 0 20px rgba(233,69,96,0.4); } 50% { text-shadow: 0 0 40px rgba(233,69,96,0.8); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(160deg, #1a1030 0%, #0a0a0f 50%, #100a15 100%);
+            z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column;
+            transition: opacity 0.5s;
+        }
+        @keyframes bounce { 0%,100% { transform: translateY(0); } 40% { transform: translateY(-20px); } 60% { transform: translateY(-5px); } }
+        @keyframes glow { 0%,100% { text-shadow: 0 0 20px rgba(255,71,87,0.5); } 50% { text-shadow: 0 0 50px rgba(255,71,87,0.9); } }
         
-        .header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(15,15,26,0.8); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.06); }
-        .ava { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #e94560, #c23152); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; box-shadow: 0 4px 15px rgba(233,69,96,0.3); }
-        .info { flex: 1; min-width: 0; }
-        .name { font-weight: 700; font-size: 14px; }
-        .uname { color: #8890a0; font-size: 11px; }
-        .donate-top { background: linear-gradient(135deg, #ffd700, #f0a500); color: #000; padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 12px; cursor: pointer; border: none; box-shadow: 0 4px 15px rgba(255,215,0,0.25); transition: 0.2s; }
-        .donate-top:active { transform: scale(0.94); }
+        .container { max-width: 400px; margin: 0 auto; padding: 16px; }
         
-        .tabs { display: flex; background: rgba(255,255,255,0.05); padding: 5px; margin: 14px 16px; border-radius: 14px; gap: 4px; border: 1px solid rgba(255,255,255,0.06); }
-        .tab { flex: 1; padding: 11px 8px; border: none; background: transparent; color: #8890a0; border-radius: 11px; font-weight: 600; cursor: pointer; font-size: 12px; transition: 0.25s; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .tab.active { background: #e94560; color: #fff; box-shadow: 0 4px 15px rgba(233,69,96,0.35); }
+        .header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; background: #14141f; border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.06); margin-bottom: 16px;
+        }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .ava {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 16px;
+        }
+        .name { font-weight: 700; font-size: 15px; }
+        .uname { color: #7a7a8a; font-size: 11px; }
+        .balance-badge {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000; padding: 10px 16px; border-radius: 14px;
+            font-weight: 800; font-size: 14px;
+        }
         
-        .page { display: none; padding: 0 16px 120px; animation: slideUp 0.4s ease; }
-        .page.active { display: block; }
-        .section-title { font-size: 17px; font-weight: 700; margin: 18px 0 12px; }
+        .banner {
+            background: rgba(255,71,87,0.1); border-radius: 18px; padding: 20px;
+            text-align: center; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.06);
+        }
+        .banner h2 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+        .banner p { color: #7a7a8a; font-size: 13px; }
         
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .mini-card { background: rgba(255,255,255,0.03); border-radius: 16px; overflow: hidden; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.06); }
-        .mini-card:active { transform: scale(0.95); border-color: #e94560; }
-        .mini-poster { height: 130px; display: flex; align-items: center; justify-content: center; font-size: 50px; background: linear-gradient(135deg, #1a1a2e, #16213e); }
-        .mini-info { padding: 10px 12px; }
-        .mini-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
-        .mini-meta { color: #8890a0; font-size: 10px; }
-        .mini-rating { color: #ffd700; font-weight: 700; font-size: 11px; margin-top: 4px; }
-        .badge { background: rgba(233,69,96,0.15); color: #e94560; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+        .dice-area {
+            background: #14141f; border-radius: 24px; padding: 30px 20px;
+            text-align: center; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.06);
+        }
+        .dice-number {
+            font-size: 72px; font-weight: 900; min-height: 100px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .dice-label { color: #7a7a8a; font-size: 13px; margin-bottom: 8px; }
+        @keyframes roll {
+            0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); }
+        }
+        .rolling { animation: roll 0.6s ease-in-out; }
+        .win-number { color: #2ed573; }
+        .lose-number { color: #ff4757; }
         
-        .card { background: rgba(255,255,255,0.03); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.06); }
-        .card .poster { font-size: 60px; text-align: center; margin-bottom: 14px; padding: 20px; }
-        .card .title { font-size: 19px; font-weight: 700; }
-        .card .meta { color: #8890a0; font-size: 12px; margin: 6px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .card .desc { color: #b0b8c0; font-size: 13px; margin: 10px 0; line-height: 1.5; }
-        .genre-tag { display: inline-block; background: rgba(233,69,96,0.1); color: #e94560; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        .bet-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+        .bet-btn {
+            padding: 12px 8px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);
+            background: #14141f; color: #aaa; font-weight: 700;
+            cursor: pointer; font-size: 13px; transition: 0.2s;
+        }
+        .bet-btn.active { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; border-color: #ffd700; }
+        .bet-btn:active { transform: scale(0.94); }
         
-        .eps { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
-        .eps button { padding: 8px 13px; border-radius: 10px; border: 1px solid rgba(76,175,80,0.3); background: rgba(76,175,80,0.05); color: #4caf50; font-size: 11px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        .eps button:active { transform: scale(0.92); }
-        .eps button.lock { border-color: rgba(255,255,255,0.1); color: #555; background: transparent; }
+        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .choice-btn {
+            padding: 18px; border-radius: 18px; border: 2px solid rgba(255,255,255,0.08);
+            background: #14141f; color: #fff; font-weight: 800;
+            cursor: pointer; font-size: 18px; transition: 0.2s; text-align: center;
+        }
+        .choice-btn:active { transform: scale(0.95); }
+        .choice-btn.even { border-color: #2ed573; }
+        .choice-btn.odd { border-color: #ff4757; }
+        .choice-btn:disabled { opacity: 0.4; pointer-events: none; }
         
-        .donate-btn { background: linear-gradient(135deg, #ffd700, #f0a500); border: none; color: #000; padding: 13px; border-radius: 12px; width: 100%; margin-top: 14px; font-weight: 700; cursor: pointer; font-size: 14px; box-shadow: 0 6px 20px rgba(255,215,0,0.2); transition: 0.2s; }
-        .donate-btn:active { transform: scale(0.96); }
+        .history {
+            background: #14141f; border-radius: 18px; padding: 16px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .history h3 { font-size: 14px; margin-bottom: 10px; color: #7a7a8a; }
+        .history-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 13px;
+        }
+        .history-win { color: #2ed573; }
+        .history-lose { color: #ff4757; }
         
-        .search-box { margin: 16px 0; }
-        .search-box input { width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; color: #fff; font-size: 14px; transition: 0.3s; }
-        .search-box input:focus { outline: none; border-color: #e94560; }
-        .search-box input::placeholder { color: #555; }
-        
-        .player-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; flex-direction: column; }
-        .player-modal.active { display: flex; }
-        .player-top { padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #111; }
-        .player-top span { font-weight: 600; font-size: 13px; }
-        .player-close { background: #e94560; border: none; color: #fff; padding: 7px 14px; border-radius: 18px; font-weight: 700; cursor: pointer; font-size: 12px; }
-        .player-frame { flex: 1; background: #000; }
-        .player-frame iframe { width: 100%; height: 100%; border: none; }
-        
-        .stars-row { display: flex; align-items: center; gap: 5px; margin: 10px 0; }
-        .star { font-size: 24px; color: #2a2a3a; cursor: pointer; transition: 0.15s; }
-        .star.on { color: #ffd700; }
-        .star:active { transform: scale(1.3); }
-        .avg-text { color: #ffd700; font-size: 13px; margin-left: 8px; font-weight: 600; }
-        
-        .review-input { width: 100%; padding: 10px 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; color: #fff; font-size: 12px; margin-top: 10px; resize: vertical; }
-        .review-btn { background: #e94560; border: none; color: #fff; padding: 8px 16px; border-radius: 8px; margin-top: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
-        .review-list { max-height: 130px; overflow-y: auto; margin-top: 10px; }
-        .review-item { padding: 8px 10px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 5px; font-size: 11px; }
-        .review-item b { color: #e94560; }
-        
-        .banner { background: linear-gradient(135deg, rgba(233,69,96,0.1), rgba(255,215,0,0.05)); border-radius: 16px; padding: 16px; text-align: center; margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.06); }
-        .banner p { font-size: 13px; color: #b0b8c0; }
-        .banner button { background: #ffd700; color: #000; border: none; padding: 10px 22px; border-radius: 20px; margin-top: 8px; font-weight: 700; cursor: pointer; font-size: 13px; box-shadow: 0 4px 15px rgba(255,215,0,0.2); }
-        
-        .back-btn { background: none; border: none; color: #e94560; font-size: 15px; cursor: pointer; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; font-weight: 600; }
-        .result-card { background: rgba(255,255,255,0.03); border-radius: 14px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.06); transition: 0.2s; }
-        .result-card:active { border-color: #e94560; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+        .action-btn {
+            padding: 14px; border-radius: 14px; border: none; font-weight: 700;
+            cursor: pointer; font-size: 13px; transition: 0.2s;
+        }
+        .action-btn:active { transform: scale(0.94); }
+        .withdraw-btn { background: #2ed573; color: #000; }
+        .donate-btn { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; }
     </style>
 </head>
 <body>
 
 <div id="splash">
-    <div style="font-size:60px;animation:float 2.5s ease-in-out infinite;">🎬</div>
-    <div style="font-size:28px;font-weight:800;color:#fff;margin-top:18px;letter-spacing:1px;animation:glow 2s ease-in-out infinite;">ДОРАМА ХАБ</div>
-    <div style="color:#e94560;font-size:13px;margin-top:8px;opacity:0.9;">Твои любимые дорамы</div>
+    <div style="font-size:70px;animation:bounce 1.5s ease-in-out infinite;">🎲</div>
+    <div style="font-size:30px;font-weight:900;color:#fff;margin-top:16px;letter-spacing:2px;animation:glow 2s ease-in-out infinite;">50 / 50</div>
+    <div style="color:#ff4757;font-size:14px;margin-top:8px;">Испытай удачу!</div>
 </div>
 
-<div class="header">
-    <div class="ava" id="ava">👤</div>
-    <div class="info">
-        <div class="name" id="uname">Гость</div>
-        <div class="uname" id="uuser">@username</div>
+<div class="container">
+    <div class="header">
+        <div class="user-info">
+            <div class="ava" id="ava">👤</div>
+            <div>
+                <div class="name" id="uname">Игрок</div>
+                <div class="uname" id="uuser">@user</div>
+            </div>
+        </div>
+        <div class="balance-badge">⭐ <span id="balance">100</span></div>
     </div>
-    <button class="donate-top" onclick="donate()">💛 Поддержать</button>
-</div>
 
-<div class="tabs">
-    <button class="tab active" onclick="openTab('catalog')">📺 Каталог</button>
-    <button class="tab" onclick="openTab('search')">🔍 Поиск</button>
-</div>
-
-<div class="page active" id="catalog">
     <div class="banner">
-        <p>💛 Нравится приложение? Поддержи проект звёздами!</p>
-        <button onclick="donate()">⭐ Отправить Stars</button>
+        <h2>🎲 Угадай ЧЁТ / НЕЧЕТ</h2>
+        <p>Выиграй x2 от ставки! Шанс 50%</p>
     </div>
-    <div class="section-title">🔥 Популярные дорамы</div>
-    <div class="grid" id="grid-view"></div>
-    <div id="detail-view" style="display:none;"></div>
-</div>
 
-<div class="page" id="search">
-    <div class="search-box"><input id="s-input" placeholder="🔍 Поиск по названию..." oninput="doSearch()"></div>
-    <div id="s-res"></div>
-</div>
-
-<div class="player-modal" id="player">
-    <div class="player-top">
-        <span id="p-title">Плеер</span>
-        <button class="player-close" onclick="closePlayer()">✕</button>
+    <div class="dice-area">
+        <div class="dice-label">Случайное число от 1 до 100</div>
+        <div class="dice-number" id="dice">🎲</div>
     </div>
-    <div class="player-frame" id="p-frame"></div>
+
+    <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:#7a7a8a;">Ставка:</div>
+    <div class="bet-grid" id="betGrid">
+        <button class="bet-btn" data-bet="10">10⭐</button>
+        <button class="bet-btn active" data-bet="25">25⭐</button>
+        <button class="bet-btn" data-bet="50">50⭐</button>
+        <button class="bet-btn" data-bet="100">100⭐</button>
+    </div>
+
+    <div class="choice-grid">
+        <button class="choice-btn even" id="btnEven" onclick="play('even')">🟢 ЧЁТ</button>
+        <button class="choice-btn odd" id="btnOdd" onclick="play('odd')">🔴 НЕЧЕТ</button>
+    </div>
+
+    <div class="history">
+        <h3>📋 История игр</h3>
+        <div id="historyList">
+            <div style="color:#7a7a8a;text-align:center;font-size:12px;">Пока нет игр</div>
+        </div>
+    </div>
+
+    <div class="action-grid">
+        <button class="action-btn withdraw-btn" onclick="withdraw()">💸 Вывести</button>
+        <button class="action-btn donate-btn" onclick="donate()">💛 Поддержать</button>
+    </div>
 </div>
 
 <script>
 const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand();
 
-let user = { name: 'Гость', uname: 'username' };
-let currentDorama = null;
+let balance = 100;
+let selectedBet = 25;
+let history = [];
+let playing = false;
+let user = { name: 'Игрок', uname: 'user' };
 
-let dramas = [
-    { id: 1, title: 'Истинная красота', poster: '💄', year: 2020, rating: 4.8, genre: 'Романтика', desc: 'Старшеклассница осваивает макияж и становится самой популярной девушкой в школе.', reviews: [{user:'Анна',stars:5,txt:'Лучшая дорама!'},{user:'Вика',stars:4,txt:'Очень смешная'}], eps: [{n:1,url:'https://vkvideo.ru/video-156580570_456247429'},{n:2,url:'https://vkvideo.ru/video-156580570_456247420'},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}] },
-    { id: 2, title: 'Наследники', poster: '👑', year: 2013, rating: 4.7, genre: 'Романтика', desc: 'История любви между обычной девушкой и наследником огромной корпорации.', reviews: [{user:'Марина',stars:5,txt:'Классика!'}], eps: [{n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''},{n:17,url:''},{n:18,url:''},{n:19,url:''},{n:20,url:''}] },
-    { id: 3, title: 'Гоблин', poster: '🗡️', year: 2016, rating: 4.9, genre: 'Фэнтези', desc: 'Бессмертный гоблин ищет свою невесту, которая снимет проклятие.', reviews: [{user:'Оля',stars:5,txt:'Шедевр!'}], eps: [{n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}] },
-    { id: 4, title: 'Потомки солнца', poster: '🌸', year: 2016, rating: 4.8, genre: 'Романтика', desc: 'История любви капитана спецназа и военного врача.', reviews: [{user:'Лена',stars:5,txt:'Потрясающе!'}], eps: [{n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}] },
-    { id: 5, title: 'Секретарь Ким', poster: '😂', year: 2018, rating: 4.7, genre: 'Комедия', desc: 'Идеальный начальник и его секретарь, которая решает уволиться.', reviews: [{user:'Катя',stars:5,txt:'Очень смешная!'}], eps: [{n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}] },
-    { id: 6, title: 'Каннамская красота', poster: '💝', year: 2018, rating: 4.6, genre: 'Романтика', desc: 'Девушка делает пластику и пытается начать новую жизнь в универе.', reviews: [{user:'Настя',stars:4,txt:'Интересная тема'}], eps: [{n:1,url:''},{n:2,url:''},{n:3,url:''},{n:4,url:''},{n:5,url:''},{n:6,url:''},{n:7,url:''},{n:8,url:''},{n:9,url:''},{n:10,url:''},{n:11,url:''},{n:12,url:''},{n:13,url:''},{n:14,url:''},{n:15,url:''},{n:16,url:''}] }
-];
-
-setTimeout(function(){ 
+// Заставка
+setTimeout(function(){
     var s = document.getElementById('splash');
     if(s) { s.style.opacity = '0'; s.style.pointerEvents = 'none'; setTimeout(function(){ if(s) s.style.display = 'none'; }, 500); }
-}, 1500);
+}, 1800);
 
 function loadUser() {
-    if(tg.initDataUnsafe?.user) { user.name = tg.initDataUnsafe.user.first_name || 'Гость'; user.uname = tg.initDataUnsafe.user.username || 'username'; }
+    if(tg.initDataUnsafe?.user) {
+        user.name = tg.initDataUnsafe.user.first_name || 'Игрок';
+        user.uname = tg.initDataUnsafe.user.username || 'user';
+    }
     document.getElementById('ava').textContent = user.name[0] || '👤';
     document.getElementById('uname').textContent = user.name;
     document.getElementById('uuser').textContent = '@'+user.uname;
 }
 
-function openTab(t) {
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-    event.target.classList.add('active');
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.getElementById(t).classList.add('active');
-    if(t==='catalog') { showGrid(); document.getElementById('detail-view').style.display='none'; }
+function updateBalance() { document.getElementById('balance').textContent = balance; }
+
+document.querySelectorAll('.bet-btn').forEach(btn => {
+    btn.onclick = function() {
+        document.querySelectorAll('.bet-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        selectedBet = parseInt(this.dataset.bet);
+    };
+});
+
+function play(choice) {
+    if(playing) return;
+    if(balance < selectedBet) {
+        tg.showAlert('❌ Недостаточно Stars!');
+        return;
+    }
+    
+    playing = true;
+    document.getElementById('btnEven').disabled = true;
+    document.getElementById('btnOdd').disabled = true;
+    
+    balance -= selectedBet;
+    updateBalance();
+    
+    var dice = document.getElementById('dice');
+    dice.classList.add('rolling');
+    dice.textContent = '🎲';
+    dice.className = 'dice-number rolling';
+    
+    setTimeout(function(){
+        var num = Math.floor(Math.random() * 100) + 1;
+        var isEven = num % 2 === 0;
+        var win = (choice === 'even' && isEven) || (choice === 'odd' && !isEven);
+        
+        dice.classList.remove('rolling');
+        dice.textContent = num;
+        
+        if(win) {
+            var prize = selectedBet * 2;
+            balance += prize;
+            dice.className = 'dice-number win-number';
+            history.unshift({ num: num, choice: choice, win: true, bet: selectedBet, prize: prize });
+            tg.showAlert('🎉 Выиграл +'+prize+' ⭐!');
+        } else {
+            dice.className = 'dice-number lose-number';
+            history.unshift({ num: num, choice: choice, win: false, bet: selectedBet });
+            tg.showAlert('😞 Не повезло! -'+selectedBet+' ⭐');
+        }
+        
+        updateBalance();
+        updateHistory();
+        playing = false;
+        document.getElementById('btnEven').disabled = false;
+        document.getElementById('btnOdd').disabled = false;
+    }, 700);
 }
 
-function avgR(d) { return d.reviews.length ? (d.reviews.reduce((a,r)=>a+r.stars,0)/d.reviews.length).toFixed(1) : 0; }
-
-function showGrid() {
-    document.getElementById('grid-view').style.display = 'grid';
-    document.getElementById('detail-view').style.display = 'none';
-    document.getElementById('grid-view').innerHTML = dramas.map((d,i)=>`<div class="mini-card" onclick="openDetail(${d.id})"><div class="mini-poster">${d.poster}</div><div class="mini-info"><div class="mini-title">${d.title}</div><div class="mini-meta">${d.eps.length} серий • ${d.year}</div><div class="mini-rating">⭐ ${avgR(d)} <span class="badge">#${i+1}</span></div></div></div>`).join('');
+function updateHistory() {
+    var list = document.getElementById('historyList');
+    if(history.length === 0) {
+        list.innerHTML = '<div style="color:#7a7a8a;text-align:center;font-size:12px;">Пока нет игр</div>';
+        return;
+    }
+    list.innerHTML = history.slice(0, 10).map(h => {
+        return `<div class="history-item">
+            <span>🎲 ${h.num} (${h.choice === 'even' ? 'Чёт' : 'Нечет'})</span>
+            <span class="${h.win ? 'history-win' : 'history-lose'}">${h.win ? '+'+h.prize : '-'+h.bet} ⭐</span>
+        </div>`;
+    }).join('');
 }
 
-function openDetail(id) {
-    currentDorama = id;
-    document.getElementById('grid-view').style.display = 'none';
-    let dv = document.getElementById('detail-view');
-    dv.style.display = 'block';
-    let d = dramas.find(dd=>dd.id===id);
-    let ar = avgR(d);
-    dv.innerHTML = `<button class="back-btn" onclick="showGrid()">← Назад</button><div class="card"><div class="poster">${d.poster}</div><div class="title">${d.title}</div><div class="meta">⭐ ${d.rating} <span>•</span> ${d.eps.length} серий <span>•</span> ${d.year} <span class="genre-tag">${d.genre||'Дорама'}</span></div><div class="desc">${d.desc}</div><div class="stars-row">${[1,2,3,4,5].map(i=>`<span class="star ${i<=ar?'on':''}" onclick="rate(${d.id},${i})">★</span>`).join('')}<span class="avg-text">${ar}/5</span></div><div class="eps">${d.eps.map(e=>`<button class="${e.url?'':'lock'}" onclick="play(${d.id},${e.n})">С${e.n} ${e.url?'▶️':'🔒'}</button>`).join('')}</div><button class="donate-btn" onclick="donate()">💛 Поддержать проект</button><textarea class="review-input" id="rt-${d.id}" placeholder="Оставь отзыв..."></textarea><button class="review-btn" onclick="addRev(${d.id})">📝 Отправить</button><div class="review-list">${(d.reviews||[]).map(r=>`<div class="review-item"><b>${r.user}</b> ${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}<br>${r.txt}</div>`).join('')}</div></div>`;
+function withdraw() {
+    tg.openTelegramLink('https://t.me/niklove666');
+    tg.showAlert('💸 Для вывода напиши мне @niklove666');
 }
 
-function doSearch() {
-    let q = document.getElementById('s-input').value.toLowerCase();
-    let f = dramas.filter(d=>d.title.toLowerCase().includes(q));
-    document.getElementById('s-res').innerHTML = q ? (f.length ? f.map(d=>`<div class="result-card" onclick="openDetail(${d.id});openTab('catalog');"><div style="font-size:35px;width:50px;text-align:center;">${d.poster}</div><div style="margin-left:12px;flex:1;"><div style="font-weight:700;font-size:14px;">${d.title}</div><div style="color:#8890a0;font-size:11px;">${d.eps.length} серий • ⭐ ${avgR(d)}/5</div></div><span style="color:#e94560;font-size:18px;">→</span></div>`).join('') : '<p style="color:#8890a0;text-align:center;margin-top:24px;">Ничего не найдено</p>') : '<p style="color:#8890a0;text-align:center;margin-top:24px;">Введи название дорамы</p>';
+function donate() {
+    tg.openTelegramLink('https://t.me/niklove666');
+    tg.showAlert('💛 Спасибо за поддержку!');
 }
 
-function play(did, en) {
-    let d = dramas.find(dd=>dd.id===did);
-    let ep = d.eps.find(e=>e.n===en);
-    if(!ep?.url) { tg.showAlert('🎬 Эта серия скоро появится!'); return; }
-    document.getElementById('p-title').textContent = d.title+' - Серия '+en;
-    document.getElementById('p-frame').innerHTML = '<iframe src="'+ep.url+'" allow="autoplay;fullscreen" allowfullscreen></iframe>';
-    document.getElementById('player').classList.add('active');
-}
-function closePlayer() { document.getElementById('player').classList.remove('active'); document.getElementById('p-frame').innerHTML=''; }
-
-function donate() { tg.openTelegramLink('https://t.me/niklove666'); tg.showAlert('💛 Спасибо за поддержку! Буду рад звёздам ⭐'); }
-function rate(id,s) {
-    let d=dramas.find(dd=>dd.id===id);
-    let r=d.reviews.find(rr=>rr.user===user.name);
-    if(r) r.stars=s; else d.reviews.push({user:user.name,stars:s,txt:''});
-    if(currentDorama===id) openDetail(id);
-    tg.showAlert('⭐ '+s+'/5!');
-}
-function addRev(id) {
-    let txt=document.getElementById('rt-'+id).value; if(!txt) return;
-    let d=dramas.find(dd=>dd.id===id);
-    let r=d.reviews.find(rr=>rr.user===user.name);
-    if(r) r.txt=txt; else d.reviews.push({user:user.name,stars:5,txt:txt});
-    openDetail(id); tg.showAlert('📝 Отзыв добавлен!');
-}
-
-loadUser(); showGrid();
+loadUser();
+updateBalance();
 </script>
 </body>
 </html>
